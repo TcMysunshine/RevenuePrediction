@@ -43,9 +43,9 @@ class FeatureEngineer:
         data['trafficSource.isTrueDirect'].replace({np.nan: 0, True: 1}, inplace=True)
         data.to_csv(saveFilePath, sep=',', header=True, index=False)
 
-    """计算log(1+x) 底数为e"""
-    def log1p(self, data):
-        return np.log1p(data)
+    # """计算log(1+x) 底数为e"""
+    # def log1p(self, data):
+    #     return np.log1p(data)
 
     '''将类别数据转换为oneHotEncode'''
     def get_dummpy(self, data, columns):

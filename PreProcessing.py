@@ -17,7 +17,7 @@ class PreProcessing:
         """
         '''数据为Json的数据列'''
         json_columns = ['device', 'geoNetwork', 'totals', 'trafficSource']
-        data = pd.read_csv(filePath,
+        data = pd.read_csv(filePath, low_memory=False,
                            dtype={'fullVisitorId': 'str', 'sessionId': 'str',
                                   'socialEngagementType': 'str', 'channelGrouping': 'str'},
                            converters={column: json.loads for column in json_columns})
@@ -65,9 +65,6 @@ class PreProcessing:
         # print(data.columns.values)
         # print(testdata.columns)
         print(data.shape)
-        unique_columnvalue = self.get_unique_column_value(data)
-        for key, value in unique_columnvalue.items():
-            print(key + ":" + str(value))
         '''消除某一列数据为常量的值'''
         data = preProcessing.remove_constant_columns(data)
         print(data.columns.values)

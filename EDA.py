@@ -8,6 +8,7 @@ class EDA:
     def __init__(self):
         super().__init__()
 
+    '''箱形图，通常用来确认数据的分布情况，如最大值最小值，可用来确定异常值'''
     def boxplot(self, data):
         # data = pd.DataFrame({
         #     "dataSet1": [1, 2, 9, 6],
@@ -22,10 +23,12 @@ class EDA:
         plt.xlabel("label")
         plt.show()
 
+    '''柱状图'''
     def bar(self, x, y):
         plt.bar(x, y, width=0.35, facecolor='lightskyblue', edgecolor='white')
         plt.show()
 
+    '''确定每一列数据的分布情况'''
     def hist(self, data):
         # data = pd.DataFrame({
         #     "dataSet1": [1, 2, 9, 6],
@@ -44,17 +47,20 @@ class EDA:
         plt.xlabel("label")
         plt.show()
 
+    ''' 读取CSV文件'''
     def get_csv_data(self, dataFilePath):
-        data = pd.read_csv(dataFilePath)
+        data = pd.read_csv(dataFilePath, low_memory=False)
         print(data.shape)
         return data
 
+    '''将每一列所拥有的类别个数写入文件'''
     def write_column_count(self, data, column_count_file):
         with open(column_count_file, 'a') as a:
             for column in data.columns.values:
                 count = data[column].nunique(dropna=False)
                 a.write(column + ":" + str(count) + '\n')
 
+    '''获取键值对'''
     def get_column_value(self, filePath):
         columns = []
         values = []
@@ -69,12 +75,23 @@ class EDA:
             values.append(temp_value)
         return columns, values
 
+    '''将每一列空值个数写入文件'''
     def write_null_column(self, data, column_null_file):
         with open(column_null_file, 'a') as a:
             for column in data.columns.values:
                 null_count = data[column].isnull().sum()
                 # print(column + ":" + str()))
                 a.write(column + ":" + str(null_count) + '\n')
+
+    '''将某一列的某一个值和所对应的个数写入文件'''
+    def draw_value_count(self, data, column):
+        value_count = data[column].value_counts()
+        print(value_count)
+        value_count.plot(kind="bar", title="value distri",
+                         figsize=(8, 8), rot=25, colormap='Paired')
+        plt.ylabel("count")
+        plt.xlabel("value")
+        plt.show()
 
 
 if __name__ == '__main__':
@@ -83,19 +100,32 @@ if __name__ == '__main__':
     basePath = "../temp/data/"
 
     """获取训练和测试集"""
-    trainDataFilePath = basePath + "traindata.csv"
+    trainDataFilePath = basePath + "traindata_v1.csv"
     testDataFilePath = basePath + "testdata.csv"
     traindata = eda.get_csv_data(trainDataFilePath)
     testdata = eda.get_csv_data(testDataFilePath)
-    datetime = pd.to_datetime(traindata['visitStartTime'], unit='s')
-    # print(datetime.days)
-    print(traindata.loc[0:5, ['visitStartTime']])
-    print(datetime.loc[0:5])
-    print(datetime.loc[0:5].dt.year)
-    print(datetime.loc[0:5].dt.month)
-    print(datetime.loc[0:5].dt.day)
-    print(datetime.loc[0:5].dt.weekday)
-    print(datetime.loc[0:5].dt.hour)
+
+    # eda.draw_value_count(traindata, 'trafficSource.medium')
+    numer_columns = ['visitNumber', 'totals.bounces',
+                     'totals.hits', 'totals.newVisits',
+                     'totals.pageviews', 'trafficSource.adwordsClickInfo.page']
+    data = traindata.loc[:, numer_columns]
+    # print(data)
+    eda.hist(data)
+    # for c in numer_columns:
+    #     print(data[c].value_counts())
+    '''时间转换'''
+    # datetime = pd.to_datetime(traindata['visitStartTime'], unit='s')
+    # # print(datetime.days)
+    # print(traindata.loc[0:5, ['visitStartTime']])
+    # print(datetime.loc[0:5])
+    # print(datetime.loc[0:5].dt.year)
+    # print(datetime.loc[0:5].dt.month)
+    # print(datetime.loc[0:5].dt.day)
+    # print(datetime.loc[0:5].dt.weekday)
+    # print(datetime.loc[0:5].dt.hour)
+
+
     # traindata['totals.newVisits']
     # exclued_features = ['trafficSource.adwordsClickInfo.adNetworkType', 'trafficSource.adwordsClickInfo.isVideoAd',
     #                     'trafficSource.adwordsClickInfo.page', 'trafficSource.adwordsClickInfo.slot']
