@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import json
 from pandas.io.json import json_normalize
-
-
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 class PreProcessing:
     def __init__(self):
         super().__init__()
@@ -25,17 +25,29 @@ class PreProcessing:
 
 
 if __name__ == '__main__':
-    preProcessing = PreProcessing()
-    testDataFilePath = "../temp/data/test.csv"
-    data = preProcessing.load_data(testDataFilePath)
-    # print(data['device'])
-    # print(data['device']['browser'])
-    print(data['device'].dtype)
-    jsonData = json_normalize(data['device'])
-    # print(jsonData.dtypes)
-    print(jsonData['browser'])
-    print(data['fullVisitorId'])
-    print(data['visitStartTime'])
+    df2 = pd.DataFrame([[1, 2, 1], [4, 3, 6]], columns=['col1', 'col2', 'col3'], index=['a', 'b'])
+    print(df2)
+    print(len(df2[df2['col1']==df2['col3']]))
+    # le = LabelEncoder().fit(["A","B","C"])
+    # print(le.transform(["A","B","C"]))
+    # print(le.transform(["C", "D", "A"]))
+    # x, indexer = pd.factorize(["A","B","C"])
+    # print(x)
+    # y = indexer.get_indexer(['A',"C","B"])
+    # print(y)
+    # print(OneHotEncoder(sparse=False).fit_transform(["A", "B"]))
+    # indexer.get_indexer(["A","B","B"])
+    # preProcessing = PreProcessing()
+    # testDataFilePath = "../temp/data/test.csv"
+    # data = preProcessing.load_data(testDataFilePath)
+    # # print(data['device'])
+    # # print(data['device']['browser'])
+    # print(data['device'].dtype)
+    # jsonData = json_normalize(data['device'])
+    # # print(jsonData.dtypes)
+    # print(jsonData['browser'])
+    # print(data['fullVisitorId'])
+    # print(data['visitStartTime'])
     # print(json_normalize(data['device']))
     # device
     # print(data['device'])

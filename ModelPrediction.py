@@ -35,9 +35,52 @@ class RandomForestRegress:
 
 
 if __name__=='__main__':
-    data = pd.DataFrame({'age': [1, 2, 3], 'salary': [0, 1, 0], 'height': [170, 176, 156]})
-    X = data.drop('height', axis=1, inplace=False)
-    Y = data.pop('height')
+    # data = pd.DataFrame({'age': [1, 2, 3], 'salary': [0, 1, 0], 'height': [170, 176, 156]})
+    # X = data.drop('height', axis=1, inplace=False)
+    # Y = data.pop('height')
+    # rfr = RandomForestRegress()
+    # rfr.trainModel(X, Y)
+    # result = rfr.predict([[2, 0], [3, 4]])
+    # print(type(result))
+    # print(result)
+    # print(result.shape)
+    # resultDf = pd.DataFrame(result)
+    # resultDf.columns = ['transactionRevenue']
+    # # resultDf.rename(columns={'0': 'transactionRevenue'}, inplace=True)
+    # print(resultDf)
+    # b = pd.Series([2, 3])
+    # bdf = pd.DataFrame(np.array(b))
+    # bdf.columns=['fullVisitorId']
+    # print(bdf)
+    # print(pd.concat([resultDf,bdf],axis=1))
+    basePath = "../temp/data/"
+
+    """获取训练和测试集"""
+    trainDataFilePath = basePath + "train_cato.csv"
+    testDataFilePath = basePath + "test_cato.csv"
+    traindata = pd.read_csv(trainDataFilePath, low_memory=False)
+    testdata = pd.read_csv(testDataFilePath, low_memory=False)
     rfr = RandomForestRegress()
-    rfr.trainModel(X, Y)
-    print(rfr.predict([[2, 0]]))
+
+    target = traindata.pop("totals.transactionRevenue")
+    trainfullVisitorId = traindata.pop("fullVisitorId")
+    testfullVisitorId = testdata.pop("fullVisitorId")
+    rfr.trainModel(traindata, target)
+
+    result = rfr.predict(testdata)
+    resultPath = basePath + "result.csv"
+    #
+    # print(type(result))
+    # print(len(result))
+    # print("id")
+    # print(type(testfullVisitorId))
+    # print(len(testfullVisitorId))
+    # # print(result.shape)
+    testfullVisitorId = np.array(testfullVisitorId)
+    result = pd.DataFrame(result)
+    testfullVisitorIdDf = pd.DataFrame(testfullVisitorId)
+    finalResult = pd.concat([testfullVisitorIdDf, result], axis=1)
+    finalResult.columns = ['fullVisitorId', 'PredictedLogRevenue']
+    saveResult = finalResult.groupby(["fullVisitorId"]).sum().reset_index()
+    print(saveResult.loc[0:5])
+    saveResult.to_csv(resultPath, sep=',', header=True, index=False)

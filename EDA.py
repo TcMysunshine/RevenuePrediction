@@ -2,7 +2,7 @@ from PreProcessing import PreProcessing
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
+import time
 
 class EDA:
     def __init__(self):
@@ -83,7 +83,7 @@ class EDA:
                 # print(column + ":" + str()))
                 a.write(column + ":" + str(null_count) + '\n')
 
-    '''将某一列的某一个值和所对应的个数写入文件'''
+    '''将某一列的某一个值和所对应的个数画出图形'''
     def draw_value_count(self, data, column):
         value_count = data[column].value_counts()
         print(value_count)
@@ -100,32 +100,38 @@ if __name__ == '__main__':
     basePath = "../temp/data/"
 
     """获取训练和测试集"""
-    trainDataFilePath = basePath + "traindata_v1.csv"
-    testDataFilePath = basePath + "testdata.csv"
+    trainDataFilePath = basePath + "train_fillna.csv"
+    testDataFilePath = basePath + "test_fillna.csv"
     traindata = eda.get_csv_data(trainDataFilePath)
     testdata = eda.get_csv_data(testDataFilePath)
+    '''查看visitID与visitStartTime相似程度'''
+    # print(len(traindata[traindata['visitStartTime']==traindata['visitId']]))
+    # print(len(testdata[testdata['visitStartTime'] == testdata['visitId']]))
+    '''某一列的value-count Start'''
+    # print(traindata['trafficSource.campaignCode'].value_counts())
+    # print(traindata['device.deviceCategory'].value_counts())
 
     # eda.draw_value_count(traindata, 'trafficSource.medium')
-    numer_columns = ['visitNumber', 'totals.bounces',
-                     'totals.hits', 'totals.newVisits',
-                     'totals.pageviews', 'trafficSource.adwordsClickInfo.page']
-    data = traindata.loc[:, numer_columns]
-    # print(data)
-    eda.hist(data)
+    '''value-count END'''
+    # numer_columns = ['visitNumber', 'totals.bounces',
+    #                  'totals.hits', 'totals.newVisits',
+    #                  'totals.pageviews', 'trafficSource.adwordsClickInfo.page']
+    # data = traindata.loc[:, numer_columns]
+    # # print(data)
+    # eda.hist(data)
+
     # for c in numer_columns:
     #     print(data[c].value_counts())
     '''时间转换'''
-    # datetime = pd.to_datetime(traindata['visitStartTime'], unit='s')
-    # # print(datetime.days)
-    # print(traindata.loc[0:5, ['visitStartTime']])
-    # print(datetime.loc[0:5])
-    # print(datetime.loc[0:5].dt.year)
-    # print(datetime.loc[0:5].dt.month)
-    # print(datetime.loc[0:5].dt.day)
-    # print(datetime.loc[0:5].dt.weekday)
-    # print(datetime.loc[0:5].dt.hour)
-
-
+    visitStartTime = pd.to_datetime(traindata['visitStartTime'], unit="s")
+    date = pd.to_datetime(traindata['date'].astype(str), format="%y%m%d", errors='ignore')
+    print(date.loc[0:5].dt.year)
+    print(date.loc[0:5].dt.month)
+    print(date.loc[0:5].dt.day)
+    print(traindata.loc[0:5, "visitStartTime"])
+    print(visitStartTime.loc[0:5].astype(str))
+    # print(visitStartTime.loc[0:5].astype(str))
+    temp = date.loc[0:5]
     # traindata['totals.newVisits']
     # exclued_features = ['trafficSource.adwordsClickInfo.adNetworkType', 'trafficSource.adwordsClickInfo.isVideoAd',
     #                     'trafficSource.adwordsClickInfo.page', 'trafficSource.adwordsClickInfo.slot']
@@ -143,51 +149,6 @@ if __name__ == '__main__':
     # eda.write_null_column(traindata, basePath + "train_column_null.txt")
     # eda.write_null_column(testdata, basePath + "test_column_null.txt")
 
-    # """填补空值"""
-    # null_features = ['totals.bounces', 'totals.newVisits', 'totals.transactionRevenue',
-    #                  'totals.pageviews', 'trafficSource.adContent',
-    #                  'trafficSource.adwordsClickInfo.adNetworkType',
-    #                  'trafficSource.adwordsClickInfo.gclId', 'trafficSource.adwordsClickInfo.isVideoAd',
-    #                  'trafficSource.adwordsClickInfo.page', 'trafficSource.adwordsClickInfo.slot',
-    #                  'trafficSource.isTrueDirect', 'trafficSource.keyword',
-    #                  'trafficSource.referralPath']
-    #
-    # str_null_features = ['trafficSource.adContent', 'trafficSource.adwordsClickInfo.adNetworkType',
-    #                      'trafficSource.adwordsClickInfo.gclId', 'trafficSource.adwordsClickInfo.slot',
-    #                      'trafficSource.keyword', 'trafficSource.referralPath']
-    #
-    # numeric_null_features =['trafficSource.adwordsClickInfo.page', 'totals.pageviews',
-    #                         'totals.newVisits', 'totals.bounces']
-    #
-    # # boolean_null_features = ['trafficSource.isTrueDirect', 'trafficSource.adwordsClickInfo.isVideoAd']
-    # target_features = ['totals.transactionRevenue']
-    #
-    # for str_feature in str_null_features:
-    #     traindata[str_feature].fillna('Null', inplace=True)
-    # for num_feature in numeric_null_features:
-    #     traindata[num_feature].fillna(0, inplace=True)
-    # traindata['device.isMobile'].replace({True: 1, False: 0}, inplace=True)
-    # traindata['trafficSource.adwordsClickInfo.isVideoAd'].replace({np.nan: 1, False: 0}, inplace=True)
-    # traindata['trafficSource.isTrueDirect'].replace({np.nan: 0, True: 1}, inplace=True)
-    # traindata.to_csv('../temp/data/traindata_v1.csv', sep=',', header=True, index=False)
-
-
-
-
-    # print("测试集没有的属性")
-    # for trainColumn in trainColumns:
-    #     if trainColumn not in testColumns:
-    #         print(trainColumn)
-    # print("训练集没有的属性")
-    # for testColumn in testColumns:
-    #     if testColumn not in trainColumns:
-    #         print(testColumn)
-
-
-    # eda.bar(trainColumns, trainDistribution)
-    # eda.hist(traindata['channelGrouping'])
-    # print(trainData[['fullVisitorId']])
-    # eda.hist(traindata.loc[:, 'device.browser'])
 
 
 
