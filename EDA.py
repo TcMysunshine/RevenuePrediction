@@ -109,9 +109,9 @@ if __name__ == '__main__':
     # print(len(testdata[testdata['visitStartTime'] == testdata['visitId']]))
     '''某一列的value-count Start'''
     # print(traindata['trafficSource.campaignCode'].value_counts())
-    # print(traindata['device.deviceCategory'].value_counts())
+    print(traindata['device.deviceCategory'].value_counts())
 
-    # eda.draw_value_count(traindata, 'trafficSource.medium')
+    eda.draw_value_count(traindata, 'channelGrouping')
     '''value-count END'''
     # numer_columns = ['visitNumber', 'totals.bounces',
     #                  'totals.hits', 'totals.newVisits',
@@ -123,15 +123,15 @@ if __name__ == '__main__':
     # for c in numer_columns:
     #     print(data[c].value_counts())
     '''时间转换'''
-    visitStartTime = pd.to_datetime(traindata['visitStartTime'], unit="s")
-    date = pd.to_datetime(traindata['date'].astype(str), format="%y%m%d", errors='ignore')
-    print(date.loc[0:5].dt.year)
-    print(date.loc[0:5].dt.month)
-    print(date.loc[0:5].dt.day)
-    print(traindata.loc[0:5, "visitStartTime"])
-    print(visitStartTime.loc[0:5].astype(str))
+    # visitStartTime = pd.to_datetime(traindata['visitStartTime'], unit="s")
+    # date = pd.to_datetime(traindata['date'].astype(str), format="%y%m%d", errors='ignore')
+    # print(date.loc[0:5].dt.year)
+    # print(date.loc[0:5].dt.month)
+    # print(date.loc[0:5].dt.day)
+    # print(traindata.loc[0:5, "visitStartTime"])
     # print(visitStartTime.loc[0:5].astype(str))
-    temp = date.loc[0:5]
+    # # print(visitStartTime.loc[0:5].astype(str))
+    # temp = date.loc[0:5]
     # traindata['totals.newVisits']
     # exclued_features = ['trafficSource.adwordsClickInfo.adNetworkType', 'trafficSource.adwordsClickInfo.isVideoAd',
     #                     'trafficSource.adwordsClickInfo.page', 'trafficSource.adwordsClickInfo.slot']

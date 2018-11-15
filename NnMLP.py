@@ -1,32 +1,20 @@
-from sklearn.ensemble import RandomForestRegressor
 import numpy as np
+from sklearn.neural_network import MLPRegressor  # 多层线性回归
 import pandas as pd
-'''随机森林'''
+
+'''神经网络回归'''
 
 
-class RandomForestRegress:
-
-    '''随机森林回归树调优参数'''
-    """max_features: Auto/None,sqrt,0.3 随机森林允许单个决策树使用特征的最大数量
-       max_depth
-       n_estimators: 子树的个数
-       min_samples_leaf： 最小样本叶片大小
-       min_samples_split
-       n_jobs：处理器的个数 -1表示没有限制 1表示只有一个处理器
-       random_state：在参数和训练数据不变的情况下，一个确定的随机值将会产生相同的结果，
-       oob_score：交叉验证方法
-    """
+class NnMLP:
     def __init__(self):
-        self.rfr = RandomForestRegressor(n_estimators=10, max_depth=None,
-                                         max_features='auto', min_samples_split=1,
-                                         min_samples_leaf=1, oob_score=False,
-                                         random_state=None, n_jobs=1)
+        self.mlp = MLPRegressor(solver='lbfgs', alpha=1e-5,
+                                hidden_layer_sizes=(5, 2), random_state=1)
 
     def trainModel(self, data, target):
-        self.rfr.fit(data, target)
+        self.mlp.fit(data, target)
 
     def predict(self, predictdata):
-        return self.rfr.predict(predictdata)
+        return self.mlp.predict(predictdata)
 
 
 if __name__ == '__main__':
@@ -44,11 +32,11 @@ if __name__ == '__main__':
     '''过滤出预测集'''
     target = traindata.pop("totals.transactionRevenue")
     '''开始训练预测'''
-    rfr = RandomForestRegress()
-    rfr.trainModel(traindata, target)
-    result = rfr.predict(testdata)
+    mlp = NnMLP()
+    mlp.trainModel(traindata, target)
+    result = mlp.predict(testdata)
     '''写入文件'''
-    resultPath = basePath + "resultRFR.csv"
+    resultPath = basePath + "resultNN.csv"
     '''合并转为Dataframe'''
     testfullVisitorId = np.array(testfullVisitorId)
     result = pd.DataFrame(result)
