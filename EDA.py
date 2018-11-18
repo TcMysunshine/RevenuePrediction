@@ -5,8 +5,6 @@ import pandas as pd
 import time
 
 class EDA:
-    def __init__(self):
-        super().__init__()
 
     '''箱形图，通常用来确认数据的分布情况，如最大值最小值，可用来确定异常值'''
     def boxplot(self, data):

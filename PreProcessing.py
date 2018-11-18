@@ -7,8 +7,6 @@ from sklearn.preprocessing import LabelEncoder
 
 
 class PreProcessing:
-    def __init__(self):
-        super().__init__()
 
     '''读取数据集'''
     def load_data(self, filePath):

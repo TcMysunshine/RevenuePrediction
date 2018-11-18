@@ -27,7 +27,7 @@ class FeatureEngineer:
 
         '''删除掉无用值'''
         campaignCode = "trafficSource.campaignCode"
-        if campaignCode in data.columns:
+        if  campaignCode in data.columns:
             del data[campaignCode]
 
         """将需要预测的转换为对数"""
