@@ -9,32 +9,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 # from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPRegressor
-'''随机森林'''
-
-
-class RandomForestRegress:
-
-    '''随机森林回归树调优参数'''
-    """max_features: Auto/None,sqrt,0.3 随机森林允许单个决策树使用特征的最大数量
-       max_depth
-       n_estimators: 子树的个数
-       min_samples_leaf： 最小样本叶片大小
-       min_samples_split
-       n_jobs：处理器的个数 -1表示没有限制 1表示只有一个处理器
-       random_state：在参数和训练数据不变的情况下，一个确定的随机值将会产生相同的结果，
-       oob_score：交叉验证方法
-    """
-    def __init__(self):
-        self.rfr = RandomForestRegressor(n_estimators=10, max_depth=None,
-                                         max_features='auto', min_samples_split=3,
-                                         min_samples_leaf=1, oob_score=False,
-                                         random_state=None, n_jobs=1)
-
-    def trainModel(self, data, target):
-        self.rfr.fit(data, target)
-
-    def predict(self, predictdata):
-        return self.rfr.predict(predictdata)
 
 
 '''计算均方误差'''
@@ -83,6 +57,12 @@ if __name__ == '__main__':
     traindata = pd.read_csv(trainDataFilePath, low_memory=False)
     # testdata = pd.read_csv(testDataFilePath, low_memory=False)
     # print(traindata.shape[1])
+    '''去除掉fullVisitorId'''
+    trainfullVisitorId = traindata.pop("fullVisitorId")
+    # testfullVisitorId = testdata.pop("fullVisitorId")
+    '''过滤出预测集'''
+    target = traindata.pop("totals.transactionRevenue")
+
     del traindata['trafficSource.adwordsClickInfo.gclId']
     del traindata['trafficSource.keyword']
     del traindata['trafficSource.referralPath']
@@ -105,38 +85,31 @@ if __name__ == '__main__':
     del result['dateMonth']
     del result['date']
     traindata = result
-    traindata['year'] = MinMaxScaler().fit_transform(traindata[['year']])
+    # traindata['year'] = MinMaxScaler().fit_transform(traindata[['year']])
     # print(traindata['year'])
     print(traindata.shape)
-    traindata = ohe(traindata, ['channelGrouping',
-                                'device.browser', 'device.deviceCategory', 'device.isMobile', 'device.operatingSystem',
-                                'geoNetwork.continent', 'geoNetwork.subContinent', 'geoNetwork.metro',
-                                'trafficSource.adwordsClickInfo.adNetworkType',
-                                'trafficSource.adwordsClickInfo.slot', 'trafficSource.adwordsClickInfo.isVideoAd',
-                                'trafficSource.adwordsClickInfo.page', 'trafficSource.adContent',
-                                'trafficSource.isTrueDirect', 'trafficSource.medium', 'trafficSource.campaign'])
 
-    traindata = min_max_scale(traindata, ['geoNetwork.city', 'geoNetwork.country', 'geoNetwork.networkDomain',
-                                          'geoNetwork.region', 'trafficSource.source'])
-    print(traindata.shape)
-    # print()
-    # print(result['dateYear'])
-    # print(result['year'])
-    # print(len(result[result['dateYear'] == result['year']]))
-    # print(len(result[result['dateMonth'] == result['month']]))
-    # print(len(result[result['dateDay'] == result['day']]))
-    # print(len(result[result['dateMonth'] == result['month']]))
-    # print(type(traindata['date']))
-    '''开始训练测试Start'''
-    '''去除掉fullVisitorId'''
-    trainfullVisitorId = traindata.pop("fullVisitorId")
-    # testfullVisitorId = testdata.pop("fullVisitorId")
-    '''过滤出预测集'''
-    target = traindata.pop("totals.transactionRevenue")
-    traindata = PCA(n_components=0.9).fit_transform(traindata)
+    # '''OneHotEncoder'''
+    # traindata = ohe(traindata, ['channelGrouping',
+    #                             'device.browser', 'device.deviceCategory', 'device.isMobile', 'device.operatingSystem',
+    #                             'geoNetwork.continent', 'geoNetwork.subContinent', 'geoNetwork.metro',
+    #                             'trafficSource.adwordsClickInfo.adNetworkType',
+    #                             'trafficSource.adwordsClickInfo.slot', 'trafficSource.adwordsClickInfo.isVideoAd',
+    #                             'trafficSource.adwordsClickInfo.page', 'trafficSource.adContent',
+    #                             'trafficSource.isTrueDirect', 'trafficSource.medium', 'trafficSource.campaign'])
+    #
+    # '''归一化'''
+    # traindata = min_max_scale(traindata, ['geoNetwork.city','geoNetwork.country', 'geoNetwork.networkDomain',
+    #                                       'geoNetwork.region', 'trafficSource.source'])
+    #
+    # '''PCA降维'''
+    # print('PCA降维')
+    # traindata = PCA(n_components=0.8, svd_solver='full').fit_transform(traindata)
+
+
     print(traindata.shape)
     '''开始训练预测'''
-    X_train, X_test, Y_train, Y_test = train_test_split(traindata, target, test_size=0.3, random_state=0)
+    X_train, X_test, Y_train, Y_test = train_test_split(traindata, target, test_size=0.33, random_state=0)
 
     '''随机森林'''
     rfr = RandomForestRegressor(n_estimators=10, max_depth=None,
@@ -146,7 +119,7 @@ if __name__ == '__main__':
 
     y_pred = rfr.predict(X_test)
     #
-    # '''神经网络'''
+    '''神经网络'''
     # mlp = MLPRegressor(solver='lbfgs', alpha=1e-5,
     #                    hidden_layer_sizes=(5, 2), random_state=1).fit(X_train, Y_train)
     # y_pred = mlp.predict(X_test)

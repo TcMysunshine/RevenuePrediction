@@ -1,8 +1,10 @@
-from PreProcessing import PreProcessing
+# -*- coding:utf-8 -*-
+# from Preprocessing import PreProcessing
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
+
 
 class EDA:
 
@@ -85,31 +87,34 @@ class EDA:
     def draw_value_count(self, data, column):
         value_count = data[column].value_counts()
         print(value_count)
-        value_count.plot(kind="bar", title="value distri",
+        value_count.plot(kind="bar", title="value-count",
                          figsize=(8, 8), rot=25, colormap='Paired')
         plt.ylabel("count")
         plt.xlabel("value")
+        plt.savefig(column+".png")
         plt.show()
 
 
 if __name__ == '__main__':
-    preProcessing = PreProcessing()
+    # preProcessing = PreProcessing()
     eda = EDA()
     basePath = "../temp/data/"
 
     """获取训练和测试集"""
     trainDataFilePath = basePath + "train_fillna.csv"
-    testDataFilePath = basePath + "test_fillna.csv"
+    # testDataFilePath = basePath + "test_fillna.csv"
     traindata = eda.get_csv_data(trainDataFilePath)
-    testdata = eda.get_csv_data(testDataFilePath)
+    train_count_filepath = basePath + "train_column_count.txt"
+    columns, values = eda.get_column_value(train_count_filepath)
+    eda.bar(columns, values)
+    # testdata = eda.get_csv_data(testDataFilePath)
     '''查看visitID与visitStartTime相似程度'''
     # print(len(traindata[traindata['visitStartTime']==traindata['visitId']]))
     # print(len(testdata[testdata['visitStartTime'] == testdata['visitId']]))
     '''某一列的value-count Start'''
     # print(traindata['trafficSource.campaignCode'].value_counts())
     print(traindata['device.deviceCategory'].value_counts())
-
-    eda.draw_value_count(traindata, 'channelGrouping')
+    eda.draw_value_count(traindata, 'trafficSource.medium')
     '''value-count END'''
     # numer_columns = ['visitNumber', 'totals.bounces',
     #                  'totals.hits', 'totals.newVisits',

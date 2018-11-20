@@ -2,11 +2,12 @@
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
-data = {'score':[90, 80, 85]}
-df = pd.DataFrame(data)
-print(df)
-from sklearn.preprocessing import MinMaxScaler
-print(MinMaxScaler().fit_transform(df[['score']]))
+import math,os
+# data = {'score':[90, 80, 85]}
+# df = pd.DataFrame(data)
+# print(df)
+# from sklearn.preprocessing import MinMaxScaler
+# print(MinMaxScaler().fit_transform(df[['score']]))
 #
 # data1 = {'score':[90, 81, 83]}
 # df1 = pd.DataFrame(data1)
@@ -31,3 +32,5 @@ print(MinMaxScaler().fit_transform(df[['score']]))
 # print(ohe)
 # print(pd.DataFrame(ohe))
 # print('end')
+print(int(math.ceil(8.0/3.0)))
+print(os.path.join("/Users/chenhao/Desktop/BiliSpark/result","test.txt"))
